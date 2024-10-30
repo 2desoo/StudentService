@@ -8,28 +8,51 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер аутентификации, который обрабатывает запросы на получение токенов доступа.
+ * Этот контроллер предоставляет метод для получения токенов доступа от сторонних провайдеров
+ * OAuth 2.0, таких как GitHub и Google, после успешной аутентификации пользователя.
+ */
 @RestController
 public class AuthController {
 
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
+
+    /**
+     * Обрабатывает GET-запрос для получения токенов доступа.
+     * Этот метод проверяет аутентифицированного пользователя и извлекает токены доступа
+     * от GitHub и Google, если они доступны. Токены возвращаются в формате строки.
+     *
+     * @param principal объект, представляющий аутентифицированного пользователя
+     * @return строка, содержащая токены доступа для GitHub и Google
+     */
     @GetMapping("/auth/token")
     public String getAccessToken(@AuthenticationPrincipal OAuth2User principal) {
+        String githubAccessToken = "Not available";
+        String googleAccessToken = "Not available";
+
         if (principal != null) {
-            // Получаем авторизованный клиент
-            OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                    "github", // Убедитесь, что здесь указано правильное имя вашего клиента
+            OAuth2AuthorizedClient githubClient = authorizedClientService.loadAuthorizedClient(
+                    "github",
                     principal.getName()
             );
+            if (githubClient != null) {
+                githubAccessToken = githubClient.getAccessToken().getTokenValue();
+            }
 
-            if (authorizedClient != null) {
-                // Извлекаем access_token
-                String accessToken = authorizedClient.getAccessToken().getTokenValue();
-                return accessToken;
+            OAuth2AuthorizedClient googleClient = authorizedClientService.loadAuthorizedClient(
+                    "google",
+                    principal.getName()
+            );
+            if (googleClient != null) {
+                googleAccessToken = googleClient.getAccessToken().getTokenValue();
             }
         }
-        return "User not authenticated";
+
+        // Формируем строку с результатами
+        return String.format("GitHub Access Token: %s Google Access Token: %s", githubAccessToken, googleAccessToken);
     }
 }
 

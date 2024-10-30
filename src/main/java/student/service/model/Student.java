@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * Представляет студента в учебном заведении.
+ * Содержит информацию о студенте, такую как имя, фамилия, отчество,
+ * группа и средняя оценка.
+ */
 @Entity
 @Table(name = "students")
 public class Student {
@@ -11,17 +16,17 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String lastName;
     private String firstName;
+    private String lastName;
     private String patronymic;
     private String studentGroup;
     private double averageGrade;
 
     public Student() {}
 
-    public Student(String lastName, String firstName, String patronymic, String studentGroup, double averageGrade) {
-        this.lastName = lastName;
+    public Student(String fistName, String lastName, String patronymic, String studentGroup, double averageGrade) {
         this.firstName = firstName;
+        this.lastName = lastName;
         this.patronymic = patronymic;
         this.studentGroup = studentGroup;
         this.averageGrade = averageGrade;

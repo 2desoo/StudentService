@@ -8,6 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Реализация сервиса для работы с сущностями {@link Student}.
+ * Этот класс предоставляет методы для выполнения операций
+ * над студентами, таких как получение списка всех студентов,
+ * добавление, обновление и удаление студентов.
+ */
 @Service
 public class StudentServiceImpl implements StudentService {
 
